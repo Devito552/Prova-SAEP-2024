@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./dashboard.css">
+    <title>Dashborad</title>
+</head>
+
+<body>
+    <h1>Dashboard</h1>
+    <p>Bem-vindo ao Dashboard! Apenas usuários autenticados podem ver esta página.</p>
+
+    <table id="turmasTable">
+        <thead>
+            <tr>
+                <th>ID Turma</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Linhas da tabela serão inseridas aqui -->
+        </tbody>
+    </table>
+
+    <button id="logoutButton">Sair</button>
+    <button id="cadastroTurmaButton">Cadastrar Turma</button>
+</body>
+
+<script>
+    async function fetchProtectedData() {
+        const response = await fetch('/turmas');
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Protected data:', data);
+        } else {
+            console.log('Erro ao buscar dados protegidos:', response.statusText);
+            if (response.status === 401 || response.status === 403) {
+                alert('Acesso negado. Por favor, faça login novamente.');
+                window.location.href = '/login';
+            }
+        }
+    }
+
+    document.getElementById('logoutButton').addEventListener('click', async function (event) {
+        const response = await fetch('/logout', {
+            method: 'GET'
+        });
+
+        if (response.ok) {
+            alert('Logout bem-sucedido');
+            window.location.href = '/login';
+        } else {
+            alert('Erro ao fazer logout');
+        }
+    });
+
+    document.getElementById('cadastroTurmaButton').addEventListener('click', function (event) {
+        window.location.href = '/cadastrar-turma'; // Redireciona para a página de cadastro de turma
+    });
+
+    async function populateTurmasTable() {
+        const response = await fetch('/turmas');
+        if (response.ok) {
+            const turmas = await response.json();
+            const tableBody = document.getElementById('turmasTable').getElementsByTagName('tbody')[0];
+
+            // Limpa qualquer conteúdo existente na tabela
+            tableBody.innerHTML = '';
+
+            // Itera sobre os dados recebidos e adiciona linhas à tabela
+            turmas.forEach(turma => {
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                        <td>${turma.idturma}</td>
+                        <td>${turma.descricao_turma}</td>
+                        <td>
+                            <button onclick="deleteTurma(${turma.idturma})">Deletar</button>
+                            <button onclick="viewAtividades(${turma.idturma})">Visualizar Atividades</button>
+                        </td>
+                    `;
+            });
+        } else {
+            console.error('Erro ao buscar dados de turmas:', response.statusText);
+        }
+    }
+
+    // Função para deletar uma turma
+    async function deleteTurma(idTurma) {
+        const response = await fetch(`/turmas/${idTurma}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Turma deletada com sucesso');
+            populateTurmasTable(); // Atualiza a tabela após a exclusão
+        } else {
+            alert('Erro ao deletar turma');
+        }
+    }
+
+    // Função para abrir uma turma (se desejar)
+    function viewAtividades(idTurma) {
+        window.location.href = `/atividade?idTurma=${idTurma}`;
+    }
+
+    // Chama a função para preencher a tabela ao carregar a página
+    populateTurmasTable();
+
+    fetchProtectedData();
+</script>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Turma</title>
+</head>
+<body>
+    <h1>Cadastro de Turma</h1>
+    <form id="cadastroTurmaForm">
+        <label for="descricaoTurma">Descrição da Turma:</label>
+        <input type="text" id="descricaoTurma" name="descricaoTurma" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <script>
+        document.getElementById('cadastroTurmaForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Evita o comportamento padrão do formulário
+
+            const descricaoTurma = document.getElementById('descricaoTurma').value;
+
+            const response = await fetch('/cadastro-turma', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ descricaoTurma })
+            });
+
+            if (response.ok) {
+                alert('Turma cadastrada com sucesso');
+                window.location.href = '/dashboard'; // Redireciona de volta para o dashboard após o cadastro
+            } else {
+                alert('Erro ao cadastrar turma');
+            }
+        });
+    </script>
+</body>
+</html>

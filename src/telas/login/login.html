@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./login.css">
+    <link rel="icon" href="../../img/icon/senha-de-login.png">
+    <title>Login</title>
+</head>
+
+<body>
+
+    <div class="tela">
+        <div class="caixa">
+            <h2>Bem Vindo</h2>
+            <form class="login" id="loginForm">
+                <input id="email" type="email" placeholder="Email" required>
+                <input id="senha" type="password" placeholder="Senha" required>
+                <button id="button">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, senha })
+        });
+
+        if (response.ok) {
+                // alert('Login bem-sucedido!');
+                window.location.href = '/dashboard';
+            } else {
+                alert('Email ou senha incorretos');
+            }
+    });
+</script>
+
+</html>

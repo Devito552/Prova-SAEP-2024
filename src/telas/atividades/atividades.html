@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades da Turma</title>
+</head>
+
+<body>
+    <h1>Atividades da Turma</h1>
+
+    <table id="atividadeTable">
+        <thead>
+            <tr>
+                <th>ID Atividade</th>
+                <th>Atividade</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Linhas da tabela serão inseridas aqui -->
+        </tbody>
+    </table>
+
+    <button id="cadastroatividadeButton">Cadastrar Atividade</button>
+
+    <script>
+        async function fetchProtectedData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idTurma = urlParams.get('idTurma');
+            const response = await fetch(`/atividades/${idTurma}`);
+
+            console.log(`/atividades/${idTurma}`);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Protected data:', data);
+            } else {
+                console.log('Erro ao buscar dados protegidos:', response.statusText);
+                if (response.status === 401 || response.status === 403) {
+                    alert('Acesso negado. Por favor, faça login novamente.');
+                    window.location.href = '/login';
+                }
+            }
+        }
+
+        async function fetchAndDisplayAtividades() {
+            // Obtém o ID da turma da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const idTurma = urlParams.get('idTurma');
+
+            const response = await fetch(`/atividades/${idTurma}`);
+            if (response.ok) {
+                const atividades = await response.json();
+                const atividadesList = document.getElementById('atividadeTable').getElementsByTagName('tbody')[0];
+
+                // Limpa qualquer conteúdo existente
+                atividadesList.innerHTML = '';
+
+                // Adiciona as atividades à lista
+                atividades.forEach(atividade => {
+                    const newRow = atividadesList.insertRow();
+                    newRow.innerHTML = `
+                        <td>${atividade.idatividade}</td>
+                        <td>${atividade.descricao_atividade}</td>
+                        <td>
+                            <button onclick="deleteTurma(${atividade.idatividade})">Deletar</button>
+                        </td>
+                    `;
+                });
+            } else {
+                console.error('Erro ao buscar atividades:', response.statusText);
+            }
+        }
+
+        document.getElementById('cadastroatividadeButton').addEventListener('click', function (event) {
+        window.location.href = '/cadastrar-turma'; // Redireciona para a página de cadastro de turma
+    });
+
+        // Chama a função para buscar e exibir as atividades da turma ao carregar a página
+        fetchAndDisplayAtividades();
+        fetchProtectedData();
+    </script>
+</body>
+
+</html>
