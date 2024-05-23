@@ -8,14 +8,20 @@
 </head>
 
 <body>
-    <h1>Atividades da Turma</h1>
+    <div class="cabeca">
+        <h3 id="professorNome"></h3>
+        <button id="logoutButton">Sair</button>
+        <button id="voltarButton">Voltar</button>
+    </div>
+
+
+    <h1 id="turmaNome">Atividades da Turma</h1>
 
     <table id="atividadeTable">
         <thead>
             <tr>
                 <th>ID Atividade</th>
                 <th>Atividade</th>
-                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +32,26 @@
     <button id="cadastroatividadeButton">Cadastrar Atividade</button>
 
     <script>
+
+        document.getElementById('logoutButton').addEventListener('click', async function (event) {
+            const response = await fetch('/logout', {
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                alert('Logout bem-sucedido');
+                window.location.href = '/login';
+            } else {
+                alert('Erro ao fazer logout');
+            }
+        });
+
+        document.getElementById('voltarButton').addEventListener('click', async function (event) {
+            window.location.href = '/dashboard';
+        });
+
+
+
         async function fetchProtectedData() {
             const urlParams = new URLSearchParams(window.location.search);
             const idTurma = urlParams.get('idTurma');
@@ -45,6 +71,30 @@
             }
         }
 
+        async function fetchAndDisplayTurma() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idTurma = urlParams.get('idTurma');
+            const response = await fetch(`/turma/${idTurma}`);
+            if (response.ok) {
+                const turma = await response.json();
+                document.getElementById('turmaNome').innerText = `Atividades da Turma: ${turma.descricao_turma}`;
+            } else {
+                console.error('Erro ao buscar turma:', response.statusText);
+            }
+        }
+
+        async function fetchAndDisplayProfessor() {
+
+            const response = await fetch(`/professores`);
+            if (response.ok) {
+                const professores = await response.json();
+                document.getElementById('professorNome').innerText = `${professores.nome}`;
+
+            } else {
+                console.error('Erro ao buscar turma:', response.statusText);
+            }
+        }
+
         async function fetchAndDisplayAtividades() {
             // Obtém o ID da turma da URL
             const urlParams = new URLSearchParams(window.location.search);
@@ -58,16 +108,16 @@
                 // Limpa qualquer conteúdo existente
                 atividadesList.innerHTML = '';
 
+                console.log(idTurma)
+
                 // Adiciona as atividades à lista
                 atividades.forEach(atividade => {
                     const newRow = atividadesList.insertRow();
                     newRow.innerHTML = `
                         <td>${atividade.idatividade}</td>
                         <td>${atividade.descricao_atividade}</td>
-                        <td>
-                            <button onclick="deleteTurma(${atividade.idatividade})">Deletar</button>
-                        </td>
-                    `;
+
+                    `
                 });
             } else {
                 console.error('Erro ao buscar atividades:', response.statusText);
@@ -75,10 +125,13 @@
         }
 
         document.getElementById('cadastroatividadeButton').addEventListener('click', function (event) {
-        window.location.href = '/cadastrar-turma'; // Redireciona para a página de cadastro de turma
-    });
+            window.location.href = '/cadastrar-atividade'; // Redireciona para a página de cadastro de turma
+        });
 
         // Chama a função para buscar e exibir as atividades da turma ao carregar a página
+
+        fetchAndDisplayTurma();
+        fetchAndDisplayProfessor()
         fetchAndDisplayAtividades();
         fetchProtectedData();
     </script>

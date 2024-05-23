@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Atividade</title>
+</head>
+
+<body>
+    <h1>Cadastrar Atividade</h1>
+    <form id="cadastrarAtividadeForm">
+        <label for="descricao_atividade">Descrição da Atividade:</label>
+        <input type="text" id="descricao_atividade" name="descricao_atividade" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <script>
+                // Lida com o envio do formulário
+        document.getElementById('cadastrarAtividadeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const descricaoAtividade = document.getElementById('descricao_atividade').value;
+
+            const response = await fetch('/cadastro-atividade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ descricao_atividade: descricaoAtividade })
+            });
+
+            if (response.ok) {
+                const { idTurma } = await response.json();
+                alert('Atividade cadastrada com sucesso!');
+                window.location.href = `/atividade?idTurma=${idTurma}`;
+            } else {
+                alert('Erro ao cadastrar atividade.');
+            }
+        });
+    </script>
+</body>
+
+</html>

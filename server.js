@@ -10,7 +10,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.static('src'));
+
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -67,7 +69,17 @@ app.get('/turmas', authenticateSession, (req, res) => {
   const { userId } = req.session;
   db.query('SELECT * FROM turma WHERE professor_idprofessor = ?', [userId], (err, results) => {
     if (err) return res.status(500).send('Server error');
+    if (results.length === 0) return res.status(404).send('Professor não encontrado');
     res.json(results);
+  });
+});
+
+app.get('/professores', authenticateSession, (req, res) => {
+  const { userId } = req.session;
+  db.query('SELECT * FROM professor WHERE idprofessor = ?', [userId], (err, results) => {
+    if (err) return res.status(500).send('Server error');
+    if (results.length === 0) return res.status(404).send('Professor não encontrado');
+    res.json(results[0]);
   });
 });
 
@@ -82,12 +94,15 @@ app.post('/cadastro-turma', authenticateSession, (req, res) => {
     });
 });
 
+
+
 app.delete('/turmas/:id', authenticateSession, (req, res) => {
   db.query('DELETE FROM turma WHERE idturma = ?', [req.params.id], (err, results) => {
     if (err) return res.status(500).send('Server error');
     res.send('Turma excluída');
   });
 });
+
 
 app.get('/atividades/:id', authenticateSession, (req, res) => {
   db.query('SELECT * FROM atividade WHERE turma_idturma= ?', [req.params.id], (err, results) => {
@@ -97,7 +112,47 @@ app.get('/atividades/:id', authenticateSession, (req, res) => {
 });
 
 
+app.get('/turma/:idTurma', (req, res) => {
+  const idTurma = req.params.idTurma;
 
+  db.query('SELECT * FROM turma WHERE idturma = ?', [idTurma], (err, results) => {
+    if (err) {
+      console.error('Erro ao buscar turma:', err);
+      return res.status(500).send('Erro ao buscar turma');
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send('Turma não encontrada');
+    }
+
+    res.json(results[0]);
+  });
+});
+
+app.post('/cadastro-atividade', (req, res) => {
+  const { descricao_atividade } = req.body;
+  const idTurma = req.session.idTurma;
+
+  if (!idTurma) {
+    return res.status(400).send('ID da turma não encontrado na sessão');
+  }
+
+  db.query('INSERT INTO atividade (descricao_atividade, turma_idturma) VALUES (?, ?)',
+    [descricao_atividade, idTurma],
+    (err, results) => {
+      if (err) {
+        console.error('Erro ao cadastrar atividade:', err);
+        return res.status(500).send('Erro ao cadastrar atividade');
+      }
+
+      res.status(200).json({ idTurma });
+    });
+});
+
+
+
+
+app.use(express.static(__dirname + '/src/telas'));
 
 app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/src/telas/login/login.html');
@@ -112,7 +167,13 @@ app.get('/cadastrar-turma', authenticateSession, (req, res) => {
 });
 
 app.get('/atividade', authenticateSession, (req, res) => {
+  const idTurma = req.query.idTurma;
+  req.session.idTurma = idTurma;
   res.sendFile(__dirname + '/src/telas/atividades/atividades.html');
+});
+
+app.get('/cadastrar-atividade', authenticateSession, (req, res) => {
+  res.sendFile(__dirname + '/src/telas/cadastrar-atividade/cadastrar-atividade.html');
 });
 
 app.get('/logout', (req, res) => {

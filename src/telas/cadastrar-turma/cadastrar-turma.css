@@ -1,13 +1,13 @@
-*{
+* {
     margin: 0;
     padding: 0;
 }
 
-body{
+body {
     font-size: x-large;
 }
 
-.cabeca{
+.cabeca {
     width: 100vw;
     height: 70px;
     background-color: black;
@@ -18,13 +18,14 @@ body{
     justify-content: space-between;
 }
 
-.cabeca button{
+.cabeca button {
     width: 100px;
     height: 30px;
     background-color: red;
 }
 
-.dashboard{
+.cadastro,
+#cadastroTurmaForm {
     width: 100vw;
     display: flex;
     flex-direction: column;
@@ -32,27 +33,21 @@ body{
     justify-content: center;
 }
 
-table, th, td {
-    border: 2px solid black;
-  }
 
-  #delete{
-    height: 40px;
+#cadastro {
+    height: 50px;
+    background-color:green;
+    font-size: x-large;
+    padding: 5px;
+}
+
+#voltar {
+    height: 50px;
     background-color: red;
     font-size: x-large;
     padding: 5px;
-  }
+}
 
-  #ver{
-    height: 40px;
-    background-color: green;
+input {
     font-size: x-large;
-    padding: 5px;
-  }
-
-  #cadastroTurmaButton{
-    height: 50px;
-    background-color:darkgrey;
-    font-size: x-large;
-    padding: 5px;
-  }
+}

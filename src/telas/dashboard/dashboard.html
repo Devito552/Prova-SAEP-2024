@@ -4,29 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./dashboard.css">
+    <link rel="stylesheet" href="dashboard.css">
     <title>Dashborad</title>
 </head>
 
 <body>
-    <h1>Dashboard</h1>
-    <p>Bem-vindo ao Dashboard! Apenas usuários autenticados podem ver esta página.</p>
+    <div class="cabeca">
+        <h3 id="professorNome"></h3>
+        <button id="logoutButton">Sair</button>
+    </div>
 
-    <table id="turmasTable">
-        <thead>
-            <tr>
-                <th>ID Turma</th>
-                <th>Descrição</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Linhas da tabela serão inseridas aqui -->
-        </tbody>
-    </table>
+    <div class="dashboard">
 
-    <button id="logoutButton">Sair</button>
-    <button id="cadastroTurmaButton">Cadastrar Turma</button>
+        <h1>Dashboard do Professor</h1>
+        <br>
+        <p>Bem-vindo ao Dashboard! Apenas usuários autenticados podem ver esta página.</p>
+        <br>
+        <table id="turmasTable">
+            <thead>
+                <tr>
+                    <th>ID Turma</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Linhas da tabela serão inseridas aqui -->
+            </tbody>
+        </table>
+<br>
+        <button id="cadastroTurmaButton">Cadastrar Turma</button>
+
+    </div>
 </body>
 
 <script>
@@ -42,6 +51,18 @@
                 alert('Acesso negado. Por favor, faça login novamente.');
                 window.location.href = '/login';
             }
+        }
+    }
+
+    async function fetchAndDisplayProfessor() {
+
+        const response = await fetch(`/professores`);
+        if (response.ok) {
+            const professores = await response.json();
+            document.getElementById('professorNome').innerText = `${professores.nome}`;
+
+        } else {
+            console.error('Erro ao buscar turma:', response.statusText);
         }
     }
 
@@ -78,8 +99,8 @@
                         <td>${turma.idturma}</td>
                         <td>${turma.descricao_turma}</td>
                         <td>
-                            <button onclick="deleteTurma(${turma.idturma})">Deletar</button>
-                            <button onclick="viewAtividades(${turma.idturma})">Visualizar Atividades</button>
+                            <button id="delete" onclick="deleteTurma(${turma.idturma})">Deletar</button>
+                            <button id="ver" onclick="viewAtividades(${turma.idturma})">Visualizar Atividades</button>
                         </td>
                     `;
             });
@@ -109,7 +130,7 @@
 
     // Chama a função para preencher a tabela ao carregar a página
     populateTurmasTable();
-
+    fetchAndDisplayProfessor()
     fetchProtectedData();
 </script>
 

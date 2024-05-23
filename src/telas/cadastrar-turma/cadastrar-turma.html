@@ -1,20 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cadastrar-turma.css">
     <title>Cadastro de Turma</title>
 </head>
+
 <body>
-    <h1>Cadastro de Turma</h1>
-    <form id="cadastroTurmaForm">
-        <label for="descricaoTurma">Descrição da Turma:</label>
-        <input type="text" id="descricaoTurma" name="descricaoTurma" required>
-        <button type="submit">Cadastrar</button>
-    </form>
+    <div class="cabeca">
+        <h3 id="professorNome"></h3>
+        <button id="logoutButton">Sair</button>
+    </div>
+
+    <div class="cadastro">
+        <h1>Cadastro de Turma</h1>
+        <form id="cadastroTurmaForm">
+            <label for="descricaoTurma">Descrição da Turma:</label>
+            <input type="text" id="descricaoTurma" name="descricaoTurma" required>
+            <br>
+            <div>
+                <button id="cadastro" type="submit">Cadastrar</button>
+                <button id="voltar">Voltar</button>
+            </div>
+        </form>
+
+    </div>
 
     <script>
-        document.getElementById('cadastroTurmaForm').addEventListener('submit', async function(event) {
+
+        async function fetchAndDisplayProfessor() {
+
+            const response = await fetch(`/professores`);
+            if (response.ok) {
+                const professores = await response.json();
+                document.getElementById('professorNome').innerText = `${professores.nome}`;
+
+            } else {
+                console.error('Erro ao buscar turma:', response.statusText);
+            }
+        }
+
+
+        document.getElementById('cadastroTurmaForm').addEventListener('submit', async function (event) {
             event.preventDefault(); // Evita o comportamento padrão do formulário
 
             const descricaoTurma = document.getElementById('descricaoTurma').value;
@@ -34,6 +63,16 @@
                 alert('Erro ao cadastrar turma');
             }
         });
+
+        document.getElementById('voltar').addEventListener('click', async function (event) {
+
+            window.location.href = '/dashboard'; // Redireciona de volta para o dashboard após o cadastro
+
+        });
+
+
+        fetchAndDisplayProfessor()
     </script>
 </body>
+
 </html>

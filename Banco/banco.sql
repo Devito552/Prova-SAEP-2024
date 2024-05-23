@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `saep_2024`.`atividade` (
   CONSTRAINT `fk_atividade_turma1`
     FOREIGN KEY (`turma_idturma`)
     REFERENCES `saep_2024`.`turma` (`idturma`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
