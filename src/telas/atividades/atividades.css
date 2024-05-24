@@ -20,12 +20,26 @@ body {
 
 .cabeca button {
     width: 100px;
-    height: 30px;
+    height: 50px;
     background-color: red;
+    font-size: x-large;
 }
 
-.cadastro,
-#cadastroTurmaForm {
+input {
+    font-size: x-large;
+}
+
+th,
+td {
+    border: 2px solid black;
+    padding: 5px;
+}
+
+table {
+    margin-top: 30px;
+}
+
+.conteudo {
     width: 100vw;
     display: flex;
     flex-direction: column;
@@ -33,26 +47,10 @@ body {
     justify-content: center;
 }
 
-
-#cadastro {
+#cadastroatividadeButton {
     height: 50px;
-    background-color:green;
+    background-color: darkgrey;
     font-size: x-large;
     padding: 5px;
+    margin-top: 30px;
 }
-
-#voltar {
-    height: 50px;
-    background-color: red;
-    font-size: x-large;
-    padding: 5px;
-}
-
-input {
-    font-size: x-large;
-}
-
-.botaos {
-    display: flex;
-    justify-content: center;    
-}   

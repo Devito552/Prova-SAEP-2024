@@ -4,41 +4,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cadastrar-atividade.css">
     <title>Cadastrar Atividade</title>
 </head>
 
 <body>
-    <h1>Cadastrar Atividade</h1>
-    <form id="cadastrarAtividadeForm">
-        <label for="descricao_atividade">Descrição da Atividade:</label>
-        <input type="text" id="descricao_atividade" name="descricao_atividade" required>
-        <button type="submit">Cadastrar</button>
-    </form>
+    <div class="cabeca">
+        <h3 id="professorNome"></h3>
+        <button id="logoutButton">Sair</button>
+    </div>
 
-    <script>
-                // Lida com o envio do formulário
-        document.getElementById('cadastrarAtividadeForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+    <div class="conteudo">
+        <h1>Cadastrar Atividade</h1>
+        <form id="cadastrarAtividadeForm">
+            <label for="descricao_atividade">Descrição da Atividade:</label><br>
+            <input type="text" id="descricao_atividade" name="descricao_atividade" required><br>
 
-            const descricaoAtividade = document.getElementById('descricao_atividade').value;
-
-            const response = await fetch('/cadastro-atividade', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ descricao_atividade: descricaoAtividade })
-            });
-
-            if (response.ok) {
-                const { idTurma } = await response.json();
-                alert('Atividade cadastrada com sucesso!');
-                window.location.href = `/atividade?idTurma=${idTurma}`;
-            } else {
-                alert('Erro ao cadastrar atividade.');
-            }
-        });
-    </script>
+            <div class="botaos">
+                <button id="cadastro" type="submit">Cadastrar</button>
+                <button id="voltar">Voltar</button>
+            </div>
+        </form>
+    </div>
 </body>
+
+<script>
+    // Lida com o envio do formulário
+    document.getElementById('cadastrarAtividadeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const descricaoAtividade = document.getElementById('descricao_atividade').value;
+
+        const response = await fetch('/cadastro-atividade', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ descricao_atividade: descricaoAtividade })
+        });
+
+        if (response.ok) {
+            const { idTurma } = await response.json();
+            alert('Atividade cadastrada com sucesso!');
+            window.location.href = `/atividade?idTurma=${idTurma}`;
+        } else {
+            alert('Erro ao cadastrar atividade.');
+        }
+    });
+
+    async function fetchAndDisplayProfessor() {
+
+        const response = await fetch(`/professores`);
+        if (response.ok) {
+            const professores = await response.json();
+            document.getElementById('professorNome').innerText = `${professores.nome}`;
+
+        } else {
+            console.error('Erro ao buscar turma:', response.statusText);
+        }
+    }
+
+    document.getElementById('voltar').addEventListener('click', async function (event) {
+        window.location.href = '/dashboard';
+    });
+
+    fetchAndDisplayProfessor()
+</script>
 
 </html>

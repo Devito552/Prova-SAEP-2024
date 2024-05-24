@@ -4,137 +4,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="atividades.css">
     <title>Atividades da Turma</title>
 </head>
 
 <body>
     <div class="cabeca">
         <h3 id="professorNome"></h3>
-        <button id="logoutButton">Sair</button>
-        <button id="voltarButton">Voltar</button>
+        <div>
+            <button id="voltarButton">Voltar</button>
+            <button id="logoutButton">Sair</button>
+        </div>
     </div>
+    <div class="conteudo">
 
+        <h1 id="turmaNome">Atividades da Turma</h1>
 
-    <h1 id="turmaNome">Atividades da Turma</h1>
+        <table id="atividadeTable">
+            <thead>
+                <tr>
+                    <th>ID Atividade</th>
+                    <th>Atividade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Linhas da tabela serão inseridas aqui -->
+            </tbody>
+        </table>
 
-    <table id="atividadeTable">
-        <thead>
-            <tr>
-                <th>ID Atividade</th>
-                <th>Atividade</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Linhas da tabela serão inseridas aqui -->
-        </tbody>
-    </table>
-
-    <button id="cadastroatividadeButton">Cadastrar Atividade</button>
-
-    <script>
-
-        document.getElementById('logoutButton').addEventListener('click', async function (event) {
-            const response = await fetch('/logout', {
-                method: 'GET'
-            });
-
-            if (response.ok) {
-                alert('Logout bem-sucedido');
-                window.location.href = '/login';
-            } else {
-                alert('Erro ao fazer logout');
-            }
-        });
-
-        document.getElementById('voltarButton').addEventListener('click', async function (event) {
-            window.location.href = '/dashboard';
-        });
-
-
-
-        async function fetchProtectedData() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const idTurma = urlParams.get('idTurma');
-            const response = await fetch(`/atividades/${idTurma}`);
-
-            console.log(`/atividades/${idTurma}`);
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Protected data:', data);
-            } else {
-                console.log('Erro ao buscar dados protegidos:', response.statusText);
-                if (response.status === 401 || response.status === 403) {
-                    alert('Acesso negado. Por favor, faça login novamente.');
-                    window.location.href = '/login';
-                }
-            }
-        }
-
-        async function fetchAndDisplayTurma() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const idTurma = urlParams.get('idTurma');
-            const response = await fetch(`/turma/${idTurma}`);
-            if (response.ok) {
-                const turma = await response.json();
-                document.getElementById('turmaNome').innerText = `Atividades da Turma: ${turma.descricao_turma}`;
-            } else {
-                console.error('Erro ao buscar turma:', response.statusText);
-            }
-        }
-
-        async function fetchAndDisplayProfessor() {
-
-            const response = await fetch(`/professores`);
-            if (response.ok) {
-                const professores = await response.json();
-                document.getElementById('professorNome').innerText = `${professores.nome}`;
-
-            } else {
-                console.error('Erro ao buscar turma:', response.statusText);
-            }
-        }
-
-        async function fetchAndDisplayAtividades() {
-            // Obtém o ID da turma da URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const idTurma = urlParams.get('idTurma');
-
-            const response = await fetch(`/atividades/${idTurma}`);
-            if (response.ok) {
-                const atividades = await response.json();
-                const atividadesList = document.getElementById('atividadeTable').getElementsByTagName('tbody')[0];
-
-                // Limpa qualquer conteúdo existente
-                atividadesList.innerHTML = '';
-
-                console.log(idTurma)
-
-                // Adiciona as atividades à lista
-                atividades.forEach(atividade => {
-                    const newRow = atividadesList.insertRow();
-                    newRow.innerHTML = `
-                        <td>${atividade.idatividade}</td>
-                        <td>${atividade.descricao_atividade}</td>
-
-                    `
-                });
-            } else {
-                console.error('Erro ao buscar atividades:', response.statusText);
-            }
-        }
-
-        document.getElementById('cadastroatividadeButton').addEventListener('click', function (event) {
-            window.location.href = '/cadastrar-atividade'; // Redireciona para a página de cadastro de turma
-        });
-
-        // Chama a função para buscar e exibir as atividades da turma ao carregar a página
-
-        fetchAndDisplayTurma();
-        fetchAndDisplayProfessor()
-        fetchAndDisplayAtividades();
-        fetchProtectedData();
-    </script>
+        <button id="cadastroatividadeButton">Cadastrar Atividade</button>
+    </div>
 </body>
+
+<script>
+
+    document.getElementById('logoutButton').addEventListener('click', async function (event) {
+        const response = await fetch('/logout', {
+            method: 'GET'
+        });
+
+        if (response.ok) {
+            alert('Logout bem-sucedido');
+            window.location.href = '/login';
+        } else {
+            alert('Erro ao fazer logout');
+        }
+    });
+
+    document.getElementById('voltarButton').addEventListener('click', async function (event) {
+        window.location.href = '/dashboard';
+    });
+
+    async function fetchProtectedData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idTurma = urlParams.get('idTurma');
+        const response = await fetch(`/atividades/${idTurma}`);
+
+        console.log(`/atividades/${idTurma}`);
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Protected data:', data);
+        } else {
+            console.log('Erro ao buscar dados protegidos:', response.statusText);
+            if (response.status === 401 || response.status === 403) {
+                alert('Acesso negado. Por favor, faça login novamente.');
+                window.location.href = '/login';
+            }
+        }
+    }
+
+    async function fetchAndDisplayTurma() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idTurma = urlParams.get('idTurma');
+        const response = await fetch(`/turma/${idTurma}`);
+        if (response.ok) {
+            const turma = await response.json();
+            document.getElementById('turmaNome').innerText = `Atividades da Turma: ${turma.descricao_turma}`;
+        } else {
+            console.error('Erro ao buscar turma:', response.statusText);
+        }
+    }
+
+    async function fetchAndDisplayProfessor() {
+
+        const response = await fetch(`/professores`);
+        if (response.ok) {
+            const professores = await response.json();
+            document.getElementById('professorNome').innerText = `${professores.nome}`;
+
+        } else {
+            console.error('Erro ao buscar turma:', response.statusText);
+        }
+    }
+
+    async function fetchAndDisplayAtividades() {
+        // Obtém o ID da turma da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const idTurma = urlParams.get('idTurma');
+
+        const response = await fetch(`/atividades/${idTurma}`);
+        if (response.ok) {
+            const atividades = await response.json();
+            const atividadesList = document.getElementById('atividadeTable').getElementsByTagName('tbody')[0];
+
+            // Limpa qualquer conteúdo existente
+            atividadesList.innerHTML = '';
+
+            console.log(idTurma)
+
+            // Adiciona as atividades à lista
+            atividades.forEach(atividade => {
+                const newRow = atividadesList.insertRow();
+                newRow.innerHTML = `
+                    <td>${atividade.idatividade}</td>
+                    <td>${atividade.descricao_atividade}</td>
+
+                `
+            });
+        } else {
+            console.error('Erro ao buscar atividades:', response.statusText);
+        }
+    }
+
+    document.getElementById('cadastroatividadeButton').addEventListener('click', function (event) {
+        window.location.href = '/cadastrar-atividade'; // Redireciona para a página de cadastro de turma
+    });
+
+    // Chama a função para buscar e exibir as atividades da turma ao carregar a página
+
+    fetchAndDisplayTurma();
+    fetchAndDisplayProfessor()
+    fetchAndDisplayAtividades();
+    fetchProtectedData();
+</script>
 
 </html>
