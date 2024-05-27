@@ -64,12 +64,9 @@ INSERT INTO professor (email, senha, nome) VALUES ('professor1@dominio.com', 'pr
 INSERT INTO professor (email, senha, nome) VALUES ('professor2@dominio.com', 'professor2@saep', 'Professor dois');
 INSERT INTO professor (email, senha, nome) VALUES ('professor3@dominio.com', 'professor3@saep', 'Professor tres');
 
-
-
 INSERT INTO turma (descricao_turma, professor_idprofessor) VALUES ('Desenvolvimento de sistemas SA01', '1');
 INSERT INTO turma (descricao_turma, professor_idprofessor) VALUES ('Desenvolvimento WEB SA01', '1');
 INSERT INTO turma (descricao_turma, professor_idprofessor) VALUES ('Desenvolvimento WEB SA01', '2');
-
 
 INSERT INTO atividade (descricao_atividade, turma_idturma) VALUES ('Lógica de programação - condicionais', '1');
 INSERT INTO atividade (descricao_atividade, turma_idturma) VALUES ('Lógica de programação - laço de repetição', '1');
