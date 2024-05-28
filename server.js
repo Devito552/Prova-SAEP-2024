@@ -157,34 +157,34 @@ app.post('/cadastro-atividade', (req, res) => {
 
 // Servindo arquivos estáticos específicos das telas
 app.use(express.static('src'));
-app.use(express.static(__dirname + '/src/telas'));
-app.use(express.static(__dirname + '/src/telas/atividades'));
+app.use(express.static(__dirname + '/src/css/'));
+
 
 // Rota para servir a página de login
 app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/src/telas/login/login.html');
+  res.sendFile(__dirname + '/src/login.html');
 });
 
 // Rota para servir a página do dashboard, protegida por autenticação
 app.get('/dashboard', authenticateSession, (req, res) => {
-  res.sendFile(__dirname + '/src/telas/dashboard/dashboard.html');
+  res.sendFile(__dirname + '/src/dashboard.html');
 });
 
 // Rota para servir a página de cadastro de turma, protegida por autenticação
 app.get('/cadastrar-turma', authenticateSession, (req, res) => {
-  res.sendFile(__dirname + '/src/telas/cadastrar-turma/cadastrar-turma.html');
+  res.sendFile(__dirname + '/src/cadastrar-turma.html');
 });
 
 // Rota para servir a página de atividades, protegida por autenticação
 app.get('/atividade', authenticateSession, (req, res) => {
   const idTurma = req.query.idTurma;
   req.session.idTurma = idTurma;
-  res.sendFile(__dirname + '/src/telas/atividades/atividades.html');
+  res.sendFile(__dirname + '/src/atividades.html');
 });
 
 // Rota para servir a página de cadastro de atividade, protegida por autenticação
 app.get('/cadastrar-atividade', authenticateSession, (req, res) => {
-  res.sendFile(__dirname + '/src/telas/cadastrar-atividade/cadastrar-atividade.html');
+  res.sendFile(__dirname + '/src/cadastrar-atividade.html');
 });
 
 // Rota para logout, destruindo a sessão
