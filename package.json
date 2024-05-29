@@ -17,5 +17,7 @@
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.9.7"
-  }
+  },
+  "devDependencies": {},
+  "keywords": []
 }
